@@ -4,11 +4,7 @@ classes = ["No Gesture", "One Shot Needle Passing", "Pull The Suture", "Instrume
 
 # dataset_type = 'ImageNet'
 img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-
-img_norm_cfg = dict(
     mean=[144.01279543590812, 131.91472349201618, 123.31423661654405], std=[64.7040393831716, 68.7886688576991, 70.7488325943194], to_rgb=True)
-
 
 train_pipeline = [
     dict(type='LoadImageFromFile'),
@@ -28,7 +24,7 @@ test_pipeline = [
     dict(type='Collect', keys=['img'])
 ]
 
-split = 3
+split = 4
 
 data = dict(
     samples_per_gpu=32,

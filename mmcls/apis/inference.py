@@ -118,3 +118,55 @@ def show_result_pyplot(model,
         fig_size=fig_size,
         win_name=title,
         wait_time=wait_time)
+
+
+def extract_features(model, img):
+    """Inference image(s) with the classifier.
+
+    Args:
+        model (nn.Module): The loaded classifier.
+        img (str/ndarray): The image filename or loaded image.
+
+    Returns:
+        result (dict): The classification results that contains
+            `class_name`, `pred_label` and `pred_score`.
+    """
+    cfg = model.cfg
+    device = next(model.parameters()).device  # model device
+    def process_img(im):
+        
+        # build the data pipeline
+        if isinstance(im, str):
+            if cfg.data.test.pipeline[0]['type'] != 'LoadImageFromFile':
+                cfg.data.test.pipeline.insert(0, dict(type='LoadImageFromFile'))
+            data = dict(img_info=dict(filename=im), img_prefix=None)
+        else:
+            if cfg.data.test.pipeline[0]['type'] == 'LoadImageFromFile':
+                cfg.data.test.pipeline.pop(0)
+            data = dict(img=im)
+        
+        test_pipeline = Compose(cfg.data.test.pipeline)
+        data = test_pipeline(data)
+        return data
+    
+    if isinstance(img, list):
+        datas = []
+        for im in img:
+            datas.append(process_img(im))
+    else:
+        data = process_img(img)
+        datas = [data]
+    
+    data = collate(datas, samples_per_gpu=1)
+    if next(model.parameters()).is_cuda:
+        # scatter to specified GPU
+        data = scatter(data, [device])[0]
+
+    result = []
+    # forward the model
+    with torch.no_grad():
+        (backbone_features, ) = model.extract_feat(data['img'], stage='backbone')
+        result.append(backbone_features.cpu())
+        
+        
+    return np.stack(result, axis=0)
