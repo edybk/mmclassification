@@ -120,7 +120,7 @@ def show_result_pyplot(model,
         wait_time=wait_time)
 
 
-def extract_features(model, img):
+def extract_features(model, img, stage='backbone'):
     """Inference image(s) with the classifier.
 
     Args:
@@ -165,7 +165,7 @@ def extract_features(model, img):
     result = []
     # forward the model
     with torch.no_grad():
-        (backbone_features, ) = model.extract_feat(data['img'], stage='backbone')
+        (backbone_features, ) = model.extract_feat(data['img'], stage=stage)
         result.append(backbone_features.cpu())
         
         
