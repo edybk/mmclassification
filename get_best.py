@@ -1,7 +1,7 @@
 import json
 
 resnet_log_jsons= "/data/home/bedward/workspace/mmpose-project/mmclassification/work_dirs/resnet50_8xb32_in1k_apas/20220618_022257.log.json"
-
+convnextlrgejsons="/data/home/bedward/workspace/mmpose-project/mmclassification/work_dirs/convnext-large_64xb64_in1k_apas/20220618_032742.log.json"
 def get_best(jsonsss):
     acc = []
     with open(jsonsss) as f:
@@ -13,4 +13,4 @@ def get_best(jsonsss):
     return max(acc)
     
 
-get_best(resnet_log_jsons)
+get_best(convnextlrgejsons)
