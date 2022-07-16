@@ -123,7 +123,7 @@ venv.bak/
 /work_dirs
 /mmcls/.mim
 .DS_Store
-
+logs
 # Pytorch
 *.pth
 
